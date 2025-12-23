@@ -29,7 +29,9 @@ public class JpaUserRepository implements UserRepository {
     }
 
     private User userSchemaToUser(UserSchema userSchema) {
-        return User.UserFactory(userSchema.getId(), userSchema.getEmail(), userSchema.getName());
+        return User.create(
+                userSchema.getId(),
+        );
     }
 
 }
