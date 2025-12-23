@@ -69,6 +69,21 @@ public class User {
         return isMember;
     }
 
+    public static User create(UUID id, String email, String name) {
+        return new User(
+            id,
+            email,
+            name,
+            false,
+            0,
+            null,
+            null,
+            null,
+            false,
+            false
+        );
+    }
+
     public static User create(
         UUID id, String email, String name, boolean githubConnected,
         long githubId, String githubUser, String githubUrl, String

@@ -32,12 +32,18 @@ public class UserController {
 
             // get the user's id from the JWT token
             UUID id = UUID.fromString(jwt.getClaimAsString("sub"));
+            String email = jwt.getClaimAsString("email");
+            String name = jwt.getClaimAsString("name");
+
+            System.out.println(jwt);
+
+            System.out.println(id);
+            System.out.println(email);
+            System.out.println(name);
 
             // use the service to get the user from persistence
-            User user = userApi.getOrCreateUser(id);
-
+            User user = userApi.getOrCreateUser(id, email, name);
             System.out.println("hit /api/users/profile");
-
             // convert user to dto
             UserDTO userDTO = UserMapper.getUserDTO(user);
 

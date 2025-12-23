@@ -6,6 +6,7 @@ import com.dsec.collab.core.port.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,8 +20,18 @@ public class UserService implements UserApi {
     }
 
     @Override
-    public User getOrCreateUser(UUID id) {
-        return userRepository.findById(id);
+    public User getOrCreateUser(UUID id, String email, String name) {
+       Optional<User> user = userRepository.findById(id);
+
+       if (user.isPresent()) {
+           System.out.println("Found user, returning them");
+           return user.get();
+       } else {
+           System.out.println("User not found, creating new and returning");
+           User newUser = User.create(id, email, name);
+           return userRepository.save(newUser);
+       }
+
     }
 
     @Override
