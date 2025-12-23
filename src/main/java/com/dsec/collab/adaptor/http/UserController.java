@@ -1,6 +1,6 @@
-package com.dsec.collab.adaptor.http.user;
+package com.dsec.collab.adaptor.http;
 
-import com.dsec.collab.core.domain.user.User;
+import com.dsec.collab.core.domain.User;
 import com.dsec.collab.core.port.UserApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

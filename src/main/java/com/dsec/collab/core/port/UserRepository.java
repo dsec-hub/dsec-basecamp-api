@@ -1,6 +1,6 @@
 package com.dsec.collab.core.port;
 
-import com.dsec.collab.core.domain.user.User;
+import com.dsec.collab.core.domain.User;
 
 import java.util.Optional;
 import java.util.UUID;

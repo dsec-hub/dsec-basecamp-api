@@ -1,20 +1,20 @@
-package com.dsec.collab.core.domain.user;
+package com.dsec.collab.core.domain;
 
 import java.util.UUID;
 
 public class User {
     private final UUID id;
-    private final String email;
-    private final String name;
+    private String email;
+    private String name;
 
-    private final boolean githubConnected;
-    private final long githubId;
-    private final String githubUser;
-    private final String githubUrl;
-    private final String githubAvatarUrl;
+    private boolean githubConnected;
+    private long githubId;
+    private String githubUser;
+    private String githubUrl;
+    private String githubAvatarUrl;
 
-    private final boolean isAdmin;
-    private final boolean isMember;
+    private boolean isAdmin;
+    private boolean isMember;
 
     private User(UUID id, String email, String name, boolean githubConnected, long githubId, String githubUser, String githubUrl, String githubAvatarUrl, boolean isModerator, boolean isMember) {
         this.id = id;
@@ -37,36 +37,72 @@ public class User {
         return this.email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getName() {
         return this.name;
+    }
+
+    public void setName() {
+        this.name = name;
     }
 
     public boolean isGithubConnected() {
         return githubConnected;
     }
 
+    public void setIsGithubConnected(boolean githubConnected) {
+        this.githubConnected = githubConnected;
+    }
+
     public long getGithubId() {
         return githubId;
+    }
+
+    public void setGithubId(long githubId) {
+        this.githubId = githubId;
     }
 
     public String getGithubUser() {
         return githubUser;
     }
 
+    public void setGithubUser(String githubUser) {
+        this.githubUser = githubUser;
+    }
+
     public String getGithubUrl() {
         return githubUrl;
+    }
+
+    public void setGithubUrl(String githubUrl) {
+        this.githubUrl = githubUrl;
     }
 
     public String getGithubAvatarUrl() {
         return githubAvatarUrl;
     }
 
+    public void setGithubAvatarUrl(String githubAvatarUrl) {
+        this.githubAvatarUrl = githubAvatarUrl;
+    }
+
     public boolean isAdmin() {
         return isAdmin;
     }
 
+    public void setIsAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
     public boolean isMember() {
         return isMember;
+    }
+
+    public void setIsMember(boolean member) {
+        isMember = member;
     }
 
     public static User create(UUID id, String email, String name) {

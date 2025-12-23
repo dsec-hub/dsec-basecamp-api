@@ -1,6 +1,6 @@
 package com.dsec.collab.adaptor.repository.jpa;
 
-import com.dsec.collab.core.domain.user.User;
+import com.dsec.collab.core.domain.User;
 import com.dsec.collab.core.port.UserRepository;
 import org.springframework.stereotype.Repository;
 
