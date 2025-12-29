@@ -6,12 +6,14 @@ import java.util.UUID;
 public class Project {
     private final UUID id;
     private final UUID ownerId;
+    private final long githubRepositoryId;
     private final String repositoryLink;
     private String title;
     private String description;
 
-    private Project(UUID id, UUID ownerId, String repositoryLink, String title, String description) {
+    private Project(UUID id, UUID ownerId, long githubRepositoryId, String repositoryLink, String title, String description) {
         this.id = id;
+        this.githubRepositoryId = githubRepositoryId;
         this.ownerId = ownerId;
         this.repositoryLink = repositoryLink;
         this.title = title;
@@ -24,6 +26,10 @@ public class Project {
 
     public UUID getOwnerId() {
         return ownerId;
+    }
+
+    public long getGithubRepositoryId() {
+        return githubRepositoryId;
     }
 
     public String getRepositoryLink() {
@@ -52,25 +58,26 @@ public class Project {
         this.description = description;
     }
 
-    public static Project create(UUID ownerId, String repositoryLink, String title, String description) {
+    public static Project create(UUID ownerId, long githubRepositoryId, String repositoryLink, String title, String description) {
         return new Project(
                 UUID.randomUUID(),
                 Objects.requireNonNull(ownerId),
+                githubRepositoryId,
                 Objects.requireNonNull(repositoryLink),
                 Objects.requireNonNull(title),
                 Objects.requireNonNull(description)
         );
     }
 
-    public static Project load(UUID id, UUID ownerId, String repositoryLink, String title, String description) {
+    public static Project load(UUID id, UUID ownerId, long githubRepositoryId, String repositoryLink, String title, String description) {
         return new Project(
                 Objects.requireNonNull(id),
                 Objects.requireNonNull(ownerId),
+                githubRepositoryId,
                 Objects.requireNonNull(repositoryLink),
                 Objects.requireNonNull(title),
                 Objects.requireNonNull(description)
         );
-
     }
 
 }
