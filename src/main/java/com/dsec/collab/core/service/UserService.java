@@ -44,14 +44,7 @@ public class UserService implements UserApi {
 
             TenantToken tenantToken = this.tenantProxy.tokenExchange(code);
 
-            System.out.println(tenantToken.getAccessToken());
-            System.out.println(tenantToken.getExpiresIn());
-            System.out.println(tenantToken.getRefreshToken());
-            System.out.println(tenantToken.getRefreshTokenExpiresIn());
-            System.out.println(tenantToken.getScope());
-            System.out.println(tenantToken.getTokenType());
-
-            // save token to user profile
+            // save token details to user profile
 
             TenantUserProfile tenantUserProfile = this.tenantProxy.queryAuthenticatedUser(tenantToken);
 

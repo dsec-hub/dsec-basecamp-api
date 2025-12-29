@@ -30,8 +30,6 @@ public class GithubProxy implements TenantProxy {
     @Override
     public GithubToken tokenExchange(String code) {
         // github url to exchange code for token
-        System.out.println("GithubProxy token exchange");
-        System.out.println(code);
         URI uri = URI.create("https://github.com/login/oauth/access_token");
 
         HttpHeaders headers = new HttpHeaders();
@@ -46,10 +44,6 @@ public class GithubProxy implements TenantProxy {
         HttpEntity<Map<String, String>> request = new HttpEntity<>(parameters, headers);
 
         GithubToken githubToken = restTemplate.postForObject(uri, request, GithubToken.class);
-
-        System.out.println("inside github proxy");
-        System.out.println(githubToken.getAccessToken());
-        System.out.println(githubToken.getRefreshToken());
 
         return githubToken;
     }
