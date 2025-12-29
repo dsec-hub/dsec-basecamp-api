@@ -1,6 +1,6 @@
 package com.dsec.collab.core.service;
 
-import com.dsec.collab.core.domain.TenantToken;
+import com.dsec.collab.core.domain.GithubAccessToken;
 import com.dsec.collab.core.domain.TenantUserProfile;
 import com.dsec.collab.core.domain.User;
 import com.dsec.collab.core.port.TenantProxy;
@@ -42,7 +42,7 @@ public class UserService implements UserApi {
     public User connectTenant(UUID id, String code) {
         try {
 
-            TenantToken tenantToken = this.tenantProxy.tokenExchange(code);
+            GithubAccessToken tenantToken = this.tenantProxy.tokenExchange(code);
 
             // save token details to user profile
 

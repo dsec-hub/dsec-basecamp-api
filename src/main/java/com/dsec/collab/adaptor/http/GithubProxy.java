@@ -1,6 +1,6 @@
 package com.dsec.collab.adaptor.http;
 
-import com.dsec.collab.core.domain.TenantToken;
+import com.dsec.collab.core.domain.GithubAccessToken;
 import com.dsec.collab.core.port.TenantProxy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -49,7 +49,7 @@ public class GithubProxy implements TenantProxy {
     }
 
     @Override
-    public GithubUserProfile queryAuthenticatedUser(TenantToken token) {
+    public GithubUserProfile queryAuthenticatedUser(GithubAccessToken token) {
         URI uri = URI.create("https://api.github.com/user");
 
         HttpHeaders headers = new HttpHeaders();
