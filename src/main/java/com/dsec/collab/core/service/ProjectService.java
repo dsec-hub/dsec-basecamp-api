@@ -4,9 +4,10 @@ import com.dsec.collab.core.domain.Project;
 import com.dsec.collab.core.port.IGithubProxy;
 import com.dsec.collab.core.port.ProjectApi;
 import com.dsec.collab.core.port.ProjectRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,6 +28,7 @@ public class ProjectService implements ProjectApi {
 
     @Override
     public Project createProject(UUID userId, long githubRepositoryId, String title, String description) {
+        // need to ensure that repository link is taken from github api, don't trust users with posting links
         String repositoryLink = proxy.getRepositoryLink(githubRepositoryId);
         Project project = Project.create(userId, githubRepositoryId, title, description, repositoryLink);
         return projectRepository.save(project);
@@ -66,17 +68,18 @@ public class ProjectService implements ProjectApi {
     }
 
     @Override
-    public List<Project> getUserProjects(UUID userId) {
-        return projectRepository.getAll();
+    public Page<Project> getUserProjects(Pageable pageable) {
+        return projectRepository.getAll(pageable);
     }
 
     @Override
-    public List<Project> getCommunityProjects() {
-        return projectRepository.getAllCommunity();
+    public Page<Project> getCommunityProjects(Pageable pageable) {
+        return projectRepository.getAllCommunity(pageable);
     }
 
     @Override
-    public List<Project> getFeaturedProjects() {
-        return projectRepository.getAllFeatured();
+    public Page<Project> getFeaturedProjects(Pageable pageable) {
+        return projectRepository.getAllFeatured(pageable);
     }
+
 }

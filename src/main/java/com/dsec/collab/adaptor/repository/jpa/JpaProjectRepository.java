@@ -2,6 +2,9 @@ package com.dsec.collab.adaptor.repository.jpa;
 
 import com.dsec.collab.core.domain.Project;
 import com.dsec.collab.core.port.ProjectRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,9 +15,11 @@ import java.util.UUID;
 public class JpaProjectRepository implements ProjectRepository {
 
     private final JpaProjectSchemaRepository repo;
+    private final JpaUserSchemaRepository jpaUserSchemaRepository;
 
-    public JpaProjectRepository(JpaProjectSchemaRepository jpaProjectSchemaRepository) {
+    public JpaProjectRepository(JpaProjectSchemaRepository jpaProjectSchemaRepository, JpaUserSchemaRepository jpaUserSchemaRepository) {
         this.repo = jpaProjectSchemaRepository;
+        this.jpaUserSchemaRepository = jpaUserSchemaRepository;
     }
 
     @Override
@@ -31,18 +36,21 @@ public class JpaProjectRepository implements ProjectRepository {
     }
 
     @Override
-    public List<Project> getAll() {
-        return repo.findAll().stream().map(this::toDomain).toList();
+    public Page<Project> getAll(Pageable pageable) {
+        List<Project> projects = repo.findAll(pageable).stream().map(this::toDomain).toList();
+        return new PageImpl<>(projects);
     }
 
     @Override
-    public List<Project> getAllFeatured() {
-        return repo.findAllByFeaturedTrue().stream().map(this::toDomain).toList();
+    public Page<Project> getAllFeatured(Pageable pageable) {
+        List<Project> projects = repo.findAllByFeaturedTrue(pageable).stream().map(this::toDomain).toList();
+        return new PageImpl<>(projects);
     }
 
     @Override
-    public List<Project> getAllCommunity() {
-        return repo.findAllByFeaturedFalse().stream().map(this::toDomain).toList();
+    public Page<Project> getAllCommunity(Pageable pageable) {
+        List<Project> projects = repo.findAllByFeaturedFalse(pageable).stream().map(this::toDomain).toList();
+        return new PageImpl<>(projects);
     }
 
     @Override
@@ -51,10 +59,28 @@ public class JpaProjectRepository implements ProjectRepository {
     }
 
     private Project toDomain(ProjectSchema projectSchema) {
-        return null;
+        return Project.load(
+                projectSchema.getId(),
+                projectSchema.getOwner().getId(),
+                projectSchema.getGithubRepositoryId(),
+                projectSchema.getRepositoryLink(),
+                projectSchema.getTitle(),
+                projectSchema.getDescription()
+        );
     }
 
     private ProjectSchema toEntity(Project project) {
-        return null;
+
+        UserSchema userSchema = jpaUserSchemaRepository.findById(project.getId()).get();
+
+        return new ProjectSchema(
+                project.getId(),
+                userSchema,
+                project.getGithubRepositoryId(),
+                project.getRepositoryLink(),
+                project.getTitle(),
+                project.getDescription(),
+                project.isFeatured()
+        );
     }
 }

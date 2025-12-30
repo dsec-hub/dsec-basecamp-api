@@ -1,8 +1,9 @@
 package com.dsec.collab.core.port;
 
 import com.dsec.collab.core.domain.Project;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ProjectApi {
@@ -15,8 +16,8 @@ public interface ProjectApi {
     Project setProjectFeatured(UUID projectId);
     Project setProjectCommunity(UUID projectId);
 
-    List<Project> getUserProjects(UUID userId);
-    List<Project> getCommunityProjects();
-    List<Project> getFeaturedProjects();
+    Page<Project> getUserProjects(Pageable pageable);
+    Page<Project> getCommunityProjects(Pageable pageable);
+    Page<Project> getFeaturedProjects(Pageable pageable);
 
 }
