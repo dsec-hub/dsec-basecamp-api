@@ -10,6 +10,7 @@ public class Project {
     private final String repositoryLink;
     private String title;
     private String description;
+    private boolean featured = false; // else "community project"
 
     private Project(UUID id, UUID ownerId, long githubRepositoryId, String repositoryLink, String title, String description) {
         this.id = id;
@@ -80,4 +81,11 @@ public class Project {
         );
     }
 
+    public boolean isFeatured() {
+        return featured;
+    }
+
+    public void setFeatured(boolean featured) {
+        this.featured = featured;
+    }
 }
