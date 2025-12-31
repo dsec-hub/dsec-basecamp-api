@@ -1,8 +1,11 @@
-package com.dsec.collab.core.port;
+package com.dsec.collab.core.service;
 
+import com.dsec.collab.adaptor.http.GithubRepositoryDTO; import com.dsec.collab.adaptor.http.ProjectDTO;
 import com.dsec.collab.core.domain.Project;
 import com.dsec.collab.core.domain.User;
+import com.dsec.collab.core.port.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -16,40 +19,47 @@ public class ProjectService implements ProjectApi {
     private final UserRepository userRepository;
     private final TokenRefresherApi tokenRefresherApi;
     private final IGithubProxy proxy;
+    private final IDTOMapper dtoMapper;
 
     public ProjectService(
             ProjectRepository projectRepository,
             UserRepository userRepository,
             TokenRefresherApi tokenRefresherApi,
-            IGithubProxy proxy
+            IGithubProxy proxy, IDTOMapper dtoMapper
     ) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.tokenRefresherApi = tokenRefresherApi;
         this.proxy = proxy;
+        this.dtoMapper = dtoMapper;
     }
 
     @Override
-    public Project getProject(UUID projectId) {
-        return projectRepository.get(projectId);
+    public ProjectDTO getProject(UUID projectId) {
+        Project project = projectRepository.get(projectId);
+        return dtoMapper.toDTO(project);
     }
 
     @Override
-    public Project createProject(UUID userId, long githubRepositoryId, String title, String description) {
+    public ProjectDTO createProject(UUID userId, long githubRepositoryId, String title, String description) {
         // need to ensure that repository link is taken from github api, don't trust users with posting links
         Optional<User> user = userRepository.findById(userId);
+
         tokenRefresherApi.validateToken(user.get());
-        String repositoryLink = proxy.getRepositoryLink(user.get().getGithubAccessToken(),  githubRepositoryId);
+
+        String repositoryLink = proxy.getRepositoryLink(user.get().getGithubAccessToken(), githubRepositoryId);
+
         Project project = Project.create(userId, githubRepositoryId, title, description, repositoryLink);
-        return projectRepository.save(project);
+
+        return dtoMapper.toDTO(projectRepository.save(project));
     }
 
     @Override
-    public Project updateProject(UUID userId, UUID projectId, String title, String description) {
+    public ProjectDTO updateProject(UUID userId, UUID projectId, String title, String description) {
         Project project = projectRepository.get(projectId);
         project.setTitle(userId, title);
         project.setDescription(userId, description);
-        return projectRepository.save(project);
+        return dtoMapper.toDTO(projectRepository.save(project));
     }
 
     @Override
@@ -64,32 +74,37 @@ public class ProjectService implements ProjectApi {
     }
 
     @Override
-    public Project setProjectFeatured(UUID projectId) {
+    public ProjectDTO setProjectFeatured(UUID projectId) {
         Project project = projectRepository.get(projectId);
         project.setFeatured(true);
-        return projectRepository.save(project);
+        return dtoMapper.toDTO(projectRepository.save(project));
     }
 
     @Override
-    public Project setProjectCommunity(UUID projectId) {
+    public void setProjectCommunity(UUID projectId) {
         Project project = projectRepository.get(projectId);
         project.setFeatured(false);
-        return projectRepository.save(project);
+        projectRepository.save(project);
     }
 
     @Override
-    public Page<Project> getUserProjects(Pageable pageable) {
-        return projectRepository.getAll(pageable);
+    public Page<ProjectDTO> getAllProjects(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return projectRepository.getAll(pageable).map(dtoMapper::toDTO);
     }
 
     @Override
-    public Page<Project> getCommunityProjects(Pageable pageable) {
-        return projectRepository.getAllCommunity(pageable);
+    public Page<ProjectDTO> getCommunityProjects(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return projectRepository.getAllCommunity(pageable).map(dtoMapper::toDTO);
+
     }
 
     @Override
-    public Page<Project> getFeaturedProjects(Pageable pageable) {
-        return projectRepository.getAllFeatured(pageable);
+    public Page<ProjectDTO> getFeaturedProjects(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return projectRepository.getAllFeatured(pageable).map(dtoMapper::toDTO);
     }
+
 
 }

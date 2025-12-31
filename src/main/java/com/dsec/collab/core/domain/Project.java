@@ -21,6 +21,16 @@ public class Project {
         this.description = description;
     }
 
+    private Project(UUID id, UUID ownerId, long githubRepositoryId, String repositoryLink, String title, String description, boolean featured) {
+        this.id = id;
+        this.githubRepositoryId = githubRepositoryId;
+        this.ownerId = ownerId;
+        this.repositoryLink = repositoryLink;
+        this.title = title;
+        this.description = description;
+        this.featured = featured;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -70,14 +80,15 @@ public class Project {
         );
     }
 
-    public static Project load(UUID id, UUID ownerId, long githubRepositoryId, String repositoryLink, String title, String description) {
+    public static Project load(UUID id, UUID ownerId, long githubRepositoryId, String repositoryLink, String title, String description, boolean featured) {
         return new Project(
                 Objects.requireNonNull(id),
                 Objects.requireNonNull(ownerId),
                 githubRepositoryId,
                 Objects.requireNonNull(repositoryLink),
                 Objects.requireNonNull(title),
-                Objects.requireNonNull(description)
+                Objects.requireNonNull(description),
+                featured
         );
     }
 

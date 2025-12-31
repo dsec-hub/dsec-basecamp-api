@@ -18,7 +18,7 @@ public interface GithubApiClient {
     GithubAccessTokenDTO exchangeToken(
             @RequestParam("client_id") String clientId,
             @RequestParam("client_secret") String clientSecret,
-            @RequestParam("client_secret") String code
+            @RequestParam("code") String code
     );
 
     @PostExchange("https://github.com/login/oauth/access_token")
@@ -36,7 +36,7 @@ public interface GithubApiClient {
 
     @GetExchange("https://api.github.com/user/repos")
     List<GithubRepositoryDTO> getUserRepositories(
-            @RequestHeader("Authorizatoin") String token,
+            @RequestHeader("Authorization") String token,
             @RequestParam("affiliation") String affiliation,
             @RequestParam("per_page") int perPage,
             @RequestParam("page") int page

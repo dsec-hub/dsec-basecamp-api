@@ -65,7 +65,8 @@ public class JpaProjectRepository implements ProjectRepository {
                 projectSchema.getGithubRepositoryId(),
                 projectSchema.getRepositoryLink(),
                 projectSchema.getTitle(),
-                projectSchema.getDescription()
+                projectSchema.getDescription(),
+                projectSchema.isFeatured()
         );
     }
 
