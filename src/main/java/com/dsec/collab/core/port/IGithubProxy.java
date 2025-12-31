@@ -1,10 +1,11 @@
 package com.dsec.collab.core.port;
 
-import com.dsec.collab.adaptor.http.GithubUserAccessToken;
-import com.dsec.collab.adaptor.http.GithubUserProfile;
+import com.dsec.collab.core.domain.GithubAccessToken;
+import com.dsec.collab.core.domain.GithubProfile;
 
 public interface IGithubProxy {
-    GithubUserAccessToken tokenExchange(String code);
-    GithubUserProfile queryAuthenticatedUser(String accessToken);
-    String getRepositoryLink(long repositoryId);
+    GithubAccessToken tokenExchange(String code);
+    GithubAccessToken refreshToken(GithubAccessToken accessToken);
+    GithubProfile queryAuthenticatedUser(GithubAccessToken token);
+    String getRepositoryLink(GithubAccessToken token, long repositoryId);
 }

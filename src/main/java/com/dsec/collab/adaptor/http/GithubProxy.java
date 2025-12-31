@@ -1,5 +1,7 @@
 package com.dsec.collab.adaptor.http;
 
+import com.dsec.collab.core.domain.GithubAccessToken;
+import com.dsec.collab.core.domain.GithubProfile;
 import com.dsec.collab.core.port.IGithubProxy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -26,7 +28,8 @@ public class GithubProxy implements IGithubProxy {
     }
 
     @Override
-    public GithubUserAccessToken tokenExchange(String code) {
+    // todo: proxy map to domain
+    public GithubProxyUserProfile tokenExchange(String code) {
         // github url to exchange code for token
         URI uri = URI.create("https://github.com/login/oauth/access_token");
 
@@ -41,20 +44,20 @@ public class GithubProxy implements IGithubProxy {
 
         HttpEntity<Map<String, String>> request = new HttpEntity<>(parameters, headers);
 
-        return restTemplate.postForObject(uri, request, GithubUserAccessToken.class);
+        return restTemplate.postForObject(uri, request, GithubProxyAccessToken.class);
     }
 
     @Override
-    public GithubUserProfile queryAuthenticatedUser(String accessToken) {
+    public GithubProfile queryAuthenticatedUser(GithubAccessToken token) {
         URI uri = URI.create("https://api.github.com/user");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(accessToken);
+        headers.setBearerAuth(token.getAccessToken());
         headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        return restTemplate.exchange(uri, HttpMethod.GET, entity, GithubUserProfile.class).getBody();
+        return restTemplate.exchange(uri, HttpMethod.GET, entity, GithubProxyUserProfile.class).getBody();
     }
 
     @Override

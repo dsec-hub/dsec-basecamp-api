@@ -3,10 +3,10 @@ package com.dsec.collab.adaptor.http;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record GithubUserProfile(long githubId, String githubUsername, String githubUrl, String githubAvatarUrl) {
+public record GithubProxyUserProfile(long githubId, String githubUsername, String githubUrl, String githubAvatarUrl) {
 
     @JsonCreator
-    public GithubUserProfile(
+    public GithubProxyUserProfile(
             @JsonProperty("id") long githubId,
             @JsonProperty("login") String githubUsername,
             @JsonProperty("url") String githubUrl,

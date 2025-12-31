@@ -1,23 +1,28 @@
-package com.dsec.collab.core.service;
+package com.dsec.collab.core.port;
 
 import com.dsec.collab.core.domain.Project;
-import com.dsec.collab.core.port.IGithubProxy;
-import com.dsec.collab.core.port.ProjectApi;
-import com.dsec.collab.core.port.ProjectRepository;
+import com.dsec.collab.core.domain.User;
+import com.dsec.collab.core.service.TokenRefresherApi;
+import com.dsec.collab.core.service.TokenRefresherService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ProjectService implements ProjectApi {
 
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+    private final TokenRefresherApi tokenRefresherApi;
     private final IGithubProxy proxy;
 
-    public ProjectService(ProjectRepository projectRepository, IGithubProxy proxy) {
+    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository, TokenRefresherService tokenRefresherService, IGithubProxy proxy) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
+        this.tokenRefresherApi = tokenRefresherService;
         this.proxy = proxy;
     }
 
@@ -29,7 +34,9 @@ public class ProjectService implements ProjectApi {
     @Override
     public Project createProject(UUID userId, long githubRepositoryId, String title, String description) {
         // need to ensure that repository link is taken from github api, don't trust users with posting links
-        String repositoryLink = proxy.getRepositoryLink(githubRepositoryId);
+        Optional<User> user = userRepository.findById(userId);
+        tokenRefresherApi.validateToken(user.get());
+        String repositoryLink = proxy.getRepositoryLink(user.get().getGithubAccessToken(),  githubRepositoryId);
         Project project = Project.create(userId, githubRepositoryId, title, description, repositoryLink);
         return projectRepository.save(project);
     }

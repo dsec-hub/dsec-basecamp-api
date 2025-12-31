@@ -1,5 +1,6 @@
 package com.dsec.collab.core.domain;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -49,6 +50,12 @@ public class User {
 
     public void setGithubAccessToken(GithubAccessToken githubAccessToken) {
         this.githubAccessToken = githubAccessToken;
+    }
+
+    public boolean hasValidToken() {
+        if (githubAccessToken == null) return false;
+
+        return (this.githubAccessToken.getAccessTokenExpiryDate().isBefore(LocalDateTime.now()));
     }
 
     public GithubProfile getGithubProfile() {

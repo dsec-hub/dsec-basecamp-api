@@ -3,10 +3,10 @@ package com.dsec.collab.adaptor.http;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record GithubUserAccessToken(String accessToken, Integer expiresIn, String refreshToken,
-                                    Integer refreshTokenExpiresIn, String scope, String tokenType) {
+public record GithubProxyAccessToken(String accessToken, Integer expiresIn, String refreshToken,
+                                     Integer refreshTokenExpiresIn, String scope, String tokenType) {
     @JsonCreator
-    public GithubUserAccessToken(
+    public GithubProxyAccessToken(
             @JsonProperty("access_token") String accessToken,
             @JsonProperty("expires_in") Integer expiresIn,
             @JsonProperty("refresh_token") String refreshToken,

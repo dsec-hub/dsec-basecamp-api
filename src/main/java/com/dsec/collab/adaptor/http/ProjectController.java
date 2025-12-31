@@ -1,6 +1,7 @@
 package com.dsec.collab.adaptor.http;
 
-import com.dsec.collab.core.service.ProjectService;
+import com.dsec.collab.core.port.ProjectService;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,10 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
+    @PostMapping("/")
+    public ProjectDTO createProject() {
+
+    }
 
 
 }
