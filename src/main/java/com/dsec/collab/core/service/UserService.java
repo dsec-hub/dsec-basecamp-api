@@ -49,4 +49,5 @@ public class UserService implements UserApi {
 
         userRepository.save(user);
     }
+
 }

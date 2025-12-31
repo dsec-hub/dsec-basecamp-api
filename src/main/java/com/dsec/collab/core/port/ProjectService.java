@@ -3,7 +3,6 @@ package com.dsec.collab.core.port;
 import com.dsec.collab.core.domain.Project;
 import com.dsec.collab.core.domain.User;
 import com.dsec.collab.core.service.TokenRefresherApi;
-import com.dsec.collab.core.service.TokenRefresherService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,10 +18,15 @@ public class ProjectService implements ProjectApi {
     private final TokenRefresherApi tokenRefresherApi;
     private final IGithubProxy proxy;
 
-    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository, TokenRefresherService tokenRefresherService, IGithubProxy proxy) {
+    public ProjectService(
+            ProjectRepository projectRepository,
+            UserRepository userRepository,
+            TokenRefresherApi tokenRefresherApi,
+            IGithubProxy proxy
+    ) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
-        this.tokenRefresherApi = tokenRefresherService;
+        this.tokenRefresherApi = tokenRefresherApi;
         this.proxy = proxy;
     }
 

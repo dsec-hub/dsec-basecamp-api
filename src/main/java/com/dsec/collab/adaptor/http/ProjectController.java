@@ -15,10 +15,5 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @PostMapping("/")
-    public ProjectDTO createProject() {
-
-    }
-
 
 }
