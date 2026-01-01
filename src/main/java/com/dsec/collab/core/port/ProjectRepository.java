@@ -13,4 +13,5 @@ public interface ProjectRepository {
     public Page<Project> getAllFeatured(Pageable pageable);
     public Page<Project> getAllCommunity(Pageable pageable);
     public void delete(UUID project);
+    public boolean existsByGithubRepositoryId(Long githubRepositoryId);
 }

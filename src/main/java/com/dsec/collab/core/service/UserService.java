@@ -35,6 +35,7 @@ public class UserService implements UserApi {
                 User newUser = User.create(id, email, name);
                 return userRepository.save(newUser);
             } catch (Exception e) {
+                System.out.println(e.getMessage());
                 return userRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("No user with id: " + id));
             }
@@ -76,5 +77,4 @@ public class UserService implements UserApi {
 
         return githubProxy.getUserOwnedRepositories(user.getGithubAccessToken());
     }
-
 }

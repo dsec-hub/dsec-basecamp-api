@@ -53,6 +53,7 @@ public class DTOMapper implements IDTOMapper {
 
     @Override
     public ProjectDTO toDTO(Project project) {
+        System.out.println("mapping project to dto");
         return new ProjectDTO(
                 project.getId(),
                 project.getOwnerId(),
@@ -66,6 +67,7 @@ public class DTOMapper implements IDTOMapper {
 
     @Override
     public Project toEntity(ProjectDTO dto) {
+        System.out.println("mapping dto to project");
         return Project.load(
             dto.id(),
             dto.ownerId(),

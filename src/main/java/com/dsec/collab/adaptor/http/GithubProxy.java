@@ -34,12 +34,20 @@ public class GithubProxy implements IGithubProxy {
 
     @Override
     public GithubAccessTokenDTO refreshToken(String refreshToken) {
-        return githubApiClient.refreshToken(
+
+        System.out.println("REFRESHING USER's TOKEN");
+        System.out.println("REFRESH TOKEN: " + refreshToken);
+
+        GithubAccessTokenDTO dto = githubApiClient.refreshToken(
                 githubClientId,
                 githubClientSecret,
                 "refresh_token",
                 refreshToken
         );
+
+        System.out.println("NEW TOKEN: " + dto.refreshToken());
+
+        return dto;
     }
 
     @Override

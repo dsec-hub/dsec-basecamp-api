@@ -55,7 +55,7 @@ public class User {
     public boolean hasValidToken() {
         if (githubAccessToken == null) return false;
 
-        return (this.githubAccessToken.getAccessTokenExpiryDate().isBefore(LocalDateTime.now()));
+        return (this.githubAccessToken.getAccessTokenExpiryDate().isAfter(LocalDateTime.now()));
     }
 
     public GithubProfile getGithubProfile() {

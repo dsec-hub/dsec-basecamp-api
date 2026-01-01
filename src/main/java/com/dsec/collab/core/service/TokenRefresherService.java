@@ -1,13 +1,16 @@
 package com.dsec.collab.core.service;
 
 import com.dsec.collab.adaptor.http.GithubAccessTokenDTO;
-import com.dsec.collab.core.domain.GithubAccessToken;
 import com.dsec.collab.core.domain.User;
+import com.dsec.collab.core.exception.GithubAuthenticationException;
 import com.dsec.collab.core.port.IDTOMapper;
 import com.dsec.collab.core.port.IGithubProxy;
 import com.dsec.collab.core.port.TokenRefresherApi;
 import com.dsec.collab.core.port.UserRepository;
 import org.springframework.stereotype.Service;
+
+import javax.naming.NoPermissionException;
+
 
 @Service
 public class TokenRefresherService implements TokenRefresherApi {
@@ -25,24 +28,28 @@ public class TokenRefresherService implements TokenRefresherApi {
     @Override
     public void validateToken(User user) {
 
-        System.out.println("GithubProxy refreshToken");
-        System.out.println("Current (OLD) token: " + user.getGithubAccessToken().getAccessToken());
+        if (user.hasValidToken()) return;
 
-        if (!user.hasValidToken()) {
-
-            System.out.println("USER DOES NOT HAVE VALID TOKEN");
-
-            GithubAccessTokenDTO newTokenDTO = githubProxy.refreshToken(
-                    user.getGithubAccessToken().getRefreshToken()
-            );
-
-            GithubAccessToken newToken = dtoMapper.toEntity(newTokenDTO);
-
-            user.setGithubAccessToken(newToken);
-
-            System.out.println("CREATED NEW TOKEN" + user.getGithubAccessToken().getAccessToken());
-
-            userRepository.save(user);
+        if (user.getGithubAccessToken() == null) {
+            throw new GithubAuthenticationException("user does not have a valid token to refresh");
         }
+
+        // get new token from github
+        GithubAccessTokenDTO newTokenDTO = githubProxy.refreshToken(
+            user.getGithubAccessToken().getRefreshToken()
+        );
+
+        // if error, clear user's github connection and throw exception
+        if (newTokenDTO.error() != null) {
+            user.setGithubProfile(null);
+            user.setGithubAccessToken(null);
+            this.userRepository.save(user);
+            throw new RuntimeException("Github refresh token failed " + newTokenDTO.error());
+        }
+
+        // got new token suc
+        user.setGithubAccessToken(dtoMapper.toEntity(newTokenDTO));
+        this.userRepository.save(user);
+
     }
 }

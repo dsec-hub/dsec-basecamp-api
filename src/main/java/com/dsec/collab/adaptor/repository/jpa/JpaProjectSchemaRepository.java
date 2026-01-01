@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface JpaProjectSchemaRepository extends JpaRepository<ProjectSchema, UUID> {
     List<ProjectSchema> findAllByFeaturedTrue(Pageable pageable);
     List<ProjectSchema> findAllByFeaturedFalse(Pageable pageable);
+    boolean existsByGithubRepositoryId(Long githubRepositoryId);
 }

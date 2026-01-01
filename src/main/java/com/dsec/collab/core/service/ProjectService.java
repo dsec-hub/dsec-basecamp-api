@@ -3,12 +3,15 @@ package com.dsec.collab.core.service;
 import com.dsec.collab.adaptor.http.GithubRepositoryDTO; import com.dsec.collab.adaptor.http.ProjectDTO;
 import com.dsec.collab.core.domain.Project;
 import com.dsec.collab.core.domain.User;
+import com.dsec.collab.core.exception.GithubAuthenticationException;
+import com.dsec.collab.core.exception.GithubRepositoryIdUsedException;
 import com.dsec.collab.core.port.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.naming.NoPermissionException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,15 +45,27 @@ public class ProjectService implements ProjectApi {
 
     @Override
     public ProjectDTO createProject(UUID userId, long githubRepositoryId, String title, String description) {
-        // need to ensure that repository link is taken from github api, don't trust users with posting links
-        Optional<User> user = userRepository.findById(userId);
+        // does user exist?
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new IllegalCallerException("User with id " + userId + " not found");
+        }
 
-        tokenRefresherApi.validateToken(user.get());
+        // does user have a valid token?
+        tokenRefresherApi.validateToken(user);
+        if (!user.hasValidToken()) {
+            throw new GithubAuthenticationException("user does not have a valid github access token");
+        }
 
-        String repositoryLink = proxy.getRepositoryLink(user.get().getGithubAccessToken(), githubRepositoryId);
+        // does project already exist with the same githubRepositoryId
+        if (projectRepository.existsByGithubRepositoryId(githubRepositoryId)) {
+            throw new GithubRepositoryIdUsedException("Project with repository id " + githubRepositoryId + " already exists");
+        }
 
+
+        String repositoryLink = proxy.getRepositoryLink(user.getGithubAccessToken(), githubRepositoryId);
+        System.out.println("repository link: " + repositoryLink);
         Project project = Project.create(userId, githubRepositoryId, title, description, repositoryLink);
-
         return dtoMapper.toDTO(projectRepository.save(project));
     }
 

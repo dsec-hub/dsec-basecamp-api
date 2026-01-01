@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record GithubAccessTokenDTO(String accessToken, Integer expiresIn, String refreshToken,
-                                   Integer refreshTokenExpiresIn, String scope, String tokenType) {
+                                   Integer refreshTokenExpiresIn, String scope, String tokenType,
+                                   String error
+) {
     @JsonCreator
     public GithubAccessTokenDTO(
             @JsonProperty("access_token") String accessToken,
@@ -12,7 +14,8 @@ public record GithubAccessTokenDTO(String accessToken, Integer expiresIn, String
             @JsonProperty("refresh_token") String refreshToken,
             @JsonProperty("refresh_token_expires_in") Integer refreshTokenExpiresIn,
             @JsonProperty("scope") String scope,
-            @JsonProperty("token_type") String tokenType
+            @JsonProperty("token_type") String tokenType,
+            @JsonProperty("error") String error
     ) {
         this.accessToken = accessToken;
         this.expiresIn = expiresIn;
@@ -20,5 +23,6 @@ public record GithubAccessTokenDTO(String accessToken, Integer expiresIn, String
         this.refreshTokenExpiresIn = refreshTokenExpiresIn;
         this.scope = scope;
         this.tokenType = tokenType;
+        this.error = error;
     }
 }

@@ -1,5 +1,7 @@
 package com.dsec.collab.adaptor.http;
 
+import com.dsec.collab.core.exception.GithubAuthenticationException;
+import com.dsec.collab.core.exception.GithubRepositoryIdUsedException;
 import com.dsec.collab.core.port.ProjectApi;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -8,7 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -22,11 +24,11 @@ public class ProjectController {
     }
 
     @PostMapping("/")
-    public HttpStatus createProject(
+    public ResponseEntity<?> createProject(
             @AuthenticationPrincipal Jwt jwt,
             @RequestBody CreateProjectRequestDTO body
     ) {
-        UUID userId = UUID.fromString(jwt.getClaimAsString("id"));
+        UUID userId = UUID.fromString(jwt.getClaimAsString("sub"));
         try {
             projectApi.createProject(
                     userId,
@@ -34,9 +36,15 @@ public class ProjectController {
                     body.title(),
                     body.description()
             );
-            return HttpStatus.CREATED;
-        } catch (Exception e) {
-            return HttpStatus.BAD_REQUEST;
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (GithubAuthenticationException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (GithubRepositoryIdUsedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 

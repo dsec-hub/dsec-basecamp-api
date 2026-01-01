@@ -13,6 +13,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "projects")
 public class ProjectSchema {
     @Id
     private UUID id;

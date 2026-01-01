@@ -58,6 +58,11 @@ public class JpaProjectRepository implements ProjectRepository {
         repo.deleteById(project);
     }
 
+    @Override
+    public boolean existsByGithubRepositoryId(Long githubRepositoryId) {
+        return repo.existsByGithubRepositoryId(githubRepositoryId);
+    }
+
     private Project toDomain(ProjectSchema projectSchema) {
         return Project.load(
                 projectSchema.getId(),
@@ -72,7 +77,8 @@ public class JpaProjectRepository implements ProjectRepository {
 
     private ProjectSchema toEntity(Project project) {
 
-        UserSchema userSchema = jpaUserSchemaRepository.findById(project.getId()).get();
+        UserSchema userSchema = jpaUserSchemaRepository.findById(project.getOwnerId())
+                .orElseThrow(() -> new RuntimeException("User not found for ID: " + project.getOwnerId()));
 
         return new ProjectSchema(
                 project.getId(),
