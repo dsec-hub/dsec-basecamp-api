@@ -21,13 +21,8 @@ public class UserController {
         this.userApi = userApi;
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello";
-    }
-
     @GetMapping("/profile")
-    public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
         // function to get the current user (id from JWT token) details from the db
         try {
 
@@ -48,9 +43,13 @@ public class UserController {
     }
 
     @GetMapping("/repos")
-    public ResponseEntity<List<GithubRepositoryDTO>> getUserGithubRepositories(@AuthenticationPrincipal Jwt jwt) {
-        List<GithubRepositoryDTO> repos = userApi.getUserRepositories(UUID.fromString(jwt.getClaimAsString("sub")));
-        return new ResponseEntity<>(repos, HttpStatus.OK);
-    }
+    public ResponseEntity<?> getUserGithubRepositories(@AuthenticationPrincipal Jwt jwt) {
+        try {
+            List<GithubRepositoryDTO> repos = userApi.getUserRepositories(UUID.fromString(jwt.getClaimAsString("sub")));
+            return new ResponseEntity<>(repos, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
+    }
 }
